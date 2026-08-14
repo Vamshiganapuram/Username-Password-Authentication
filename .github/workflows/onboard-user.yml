@@ -1,0 +1,41 @@
+name: Auth0 User Onboarding
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "New user email"
+        required: true
+        type: string
+
+      password:
+        description: "Temporary user password"
+        required: true
+        type: string
+
+jobs:
+  onboard:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create Auth0 user
+        env:
+          AUTH0_DOMAIN: ${{ secrets.AUTH0_DOMAIN }}
+          AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+          AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+          AUTH0_CONNECTION: ${{ secrets.AUTH0_CONNECTION }}
+        run: |
+          python scripts/onboard_user.py \
+            "${{ inputs.email }}" \
+            "${{ inputs.password }}"
