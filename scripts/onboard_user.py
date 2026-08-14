@@ -63,7 +63,7 @@ roles_response = requests.get(
 
 roles_response.raise_for_status()
 
-roles = roles_response.json()["roles"]
+roles = roles_response.json()
 
 user_role = next(
     (role for role in roles if role["name"] == "User"),
